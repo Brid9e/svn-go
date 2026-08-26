@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Bundled svn client (built by scripts/build-static-svn.sh)
+src-tauri/resources/svn/svn
+
+# Static svn build cache
+src-tauri/target/svn-static-build/

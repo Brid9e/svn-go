@@ -1,7 +1,7 @@
 <h1 align="center">SvnGo</h1>
 
 <p align="center">
-  <b>轻量 SVN 图形化客户端 · 安装包仅 3.5MB</b>
+  <b>轻量 SVN 图形化客户端 · 内置 SVN 客户端，零依赖</b>
 </p>
 
 <p align="center">
@@ -42,7 +42,7 @@
 | 前端 | React 19 + TypeScript + Vite |
 | 桌面框架 | Tauri v2 |
 | 后端 | Rust（通过 Tauri command 调用 SVN CLI） |
-| 版本控制 | 系统 SVN 命令行客户端 |
+| 版本控制 | 内置静态 SVN 客户端（Apache Subversion，随包分发，无需系统安装） |
 
 ---
 
@@ -50,14 +50,9 @@
 
 > **注意**: SvnGo 当前仅支持 **macOS**（ARM64）。
 
-从 [Releases](https://github.com/Brid9e/svn-go/releases) 下载 `.dmg` 安装包（仅 **3.5MB**），打开即可使用。
+从 [Releases](https://github.com/Brid9e/svn-go/releases) 下载 `.dmg` 安装包（约 **10MB**），打开即可使用。
 
-**依赖**: 系统需安装 SVN 命令行客户端（`svn` 需在 `PATH` 中）。
-
-```bash
-# 检查是否已安装
-svn --version
-```
+**零依赖**: 安装包已内置静态链接的 SVN 客户端（Apache Subversion 1.14.x），**无需**在系统安装 svn。
 
 ---
 
@@ -79,7 +74,9 @@ pnpm tauri build
 - Node.js 20+
 - pnpm
 - Rust toolchain
-- SVN 命令行客户端（`svn` 在 `PATH` 中）
+- （可选）系统 SVN 命令行客户端——仅用于开发调试；发布包已内置静态 svn，用户无需安装
+
+> 内置 svn 客户端构建脚本：`src-tauri/scripts/build-static-svn.sh`（需 Homebrew: apr apr-util serf sqlite openssl@3 zlib）。产物 `src-tauri/resources/svn/svn` 随 `bundle.resources` 打进安装包，运行时优先加载。
 
 ---
 

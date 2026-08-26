@@ -1,7 +1,11 @@
 use std::path::PathBuf;
 use std::fs;
+use std::sync::OnceLock;
 use tempfile::tempdir;
 use tauri::{Emitter, Manager};
+
+/// 已解析的 svn 可执行文件路径（setup 阶段确定，避免每次命令重复探测）
+static SVN_PATH: OnceLock<String> = OnceLock::new();
 
 /// 解码 {U+XXXX} 格式的 Unicode 转义序列为实际字符
 fn decode_u_escapes(s: &str) -> String {
@@ -37,7 +41,21 @@ fn decode_u_escapes(s: &str) -> String {
     result
 }
 
-fn find_svn() -> String {
+/// 解析 svn 可执行文件路径：优先使用随应用打包的静态 svn，其次系统 svn
+fn resolve_svn_path(app: &tauri::AppHandle) -> String {
+    // 1. 内置 svn（resources/svn/svn，随安装包分发，用户无需安装 svn 客户端）
+    if let Ok(dir) = app.path().resource_dir() {
+        let bundled = dir.join("svn").join("svn");
+        if bundled.exists() {
+            return bundled.to_string_lossy().to_string();
+        }
+    }
+    // 2. 回退到系统 svn
+    find_system_svn()
+}
+
+/// 查找系统安装的 svn
+fn find_system_svn() -> String {
     let candidates = ["/opt/homebrew/bin/svn", "/usr/local/bin/svn", "/usr/bin/svn"];
     for p in &candidates {
         if std::path::Path::new(p).exists() {
@@ -46,6 +64,13 @@ fn find_svn() -> String {
     }
     // fallback: hope it's in PATH
     "svn".to_string()
+}
+
+fn find_svn() -> String {
+    if let Some(p) = SVN_PATH.get() {
+        return p.clone();
+    }
+    find_system_svn()
 }
 
 fn svn_cmd() -> tokio::process::Command {
@@ -577,7 +602,7 @@ fn read_local_dir(path: String) -> Result<Vec<SvnEntry>, String> {
         return Err(format!("Not a directory: {}", path));
     }
     let mut entries = Vec::new();
-    let mut rd = std::fs::read_dir(dir).map_err(|e| format!("Failed to read directory: {}", e))?;
+    let rd = std::fs::read_dir(dir).map_err(|e| format!("Failed to read directory: {}", e))?;
     for entry in rd {
         let entry = entry.map_err(|e| format!("Failed to read entry: {}", e))?;
         let name = entry.file_name().to_string_lossy().to_string();
@@ -918,6 +943,8 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
+            // 解析 svn 路径：优先使用随应用打包的静态 svn，用户无需安装 svn 客户端
+            let _ = SVN_PATH.set(resolve_svn_path(app.handle()));
             #[cfg(target_os = "macos")]
             if let Some(window) = app.get_webview_window("main") {
                 let _ = window.set_title_bar_style(tauri::utils::TitleBarStyle::Overlay);

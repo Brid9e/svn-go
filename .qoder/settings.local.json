@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(*)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/tauri-apps/tauri-docs/refs/heads/main/content/develop/sidecar.mdx\" 2>&1 | head -300)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/tauri-apps/plugins-workspace/refs/heads/v2/packages/shell/src/shell.rs\" 2>&1 | head -200)",
+      "Bash(curl -sL --connect-timeout 15 --max-time 25 \"https://raw.githubusercontent.com/tauri-apps/tauri-docs/refs/heads/main/content/develop/sidecar.mdx\" 2>&1)",
+      "Bash(gh api repos/tauri-apps/tauri-docs/contents/content/develop/sidecar.mdx 2>&1 | head -50)",
+      "Bash(gh api \"repos/tauri-apps/tauri-docs/git/trees/dev?recursive=1\" --jq '.tree[] | select\\(.path | test\\(\"sidecar\"\\)\\)' 2>&1 | head -30)",
+      "Bash(gh api \"repos/tauri-apps/tauri-docs/git/trees/v2?recursive=1\" --jq '.tree[] | select\\(.path | test\\(\"sidecar\"\\)\\)' 2>&1 | head -30)",
+      "Bash(gh api repos/tauri-apps/tauri-docs/git/blobs/b8afec9ffd644f6b1a4337825372ed7120a2a1ef --jq '.content' 2>&1 | base64 -d 2>/dev/null)",
+      "Bash(gh api repos/tauri-apps/tauri-docs/git/blobs/9346bc74f6174f6c41655978684402a0e22beb6e --jq '.content' 2>&1 | base64 -d 2>/dev/null)",
+      "Bash(gh api \"repos/tauri-apps/tauri-docs/git/trees/v2?recursive=1\" --jq '.tree[] | select\\(.path | test\\(\"sign/macos|macos.*sign|shell\"\\)\\)' 2>&1 | head -30)",
+      "Bash(gh api repos/tauri-apps/tauri-docs/git/blobs/df3b7f3dcca5464c0d102f87a98551cb3728d9b6 --jq '.content' 2>&1 | base64 -d 2>/dev/null)",
+      "Bash(gh api \"repos/tauri-apps/tauri-docs/git/trees/v2?recursive=1\" --jq '.tree[] | select\\(.path | test\\(\"distribute.*macos|macos.*code|sign\"\\)\\)' 2>&1 | head -30)",
+      "Bash(gh api repos/tauri-apps/tauri-docs/git/blobs/134ee070cf2b0075a5ed5e0cc8eed6d4f5da883f --jq '.content' 2>&1 | base64 -d 2>/dev/null)"
+    ]
+  }
+}
