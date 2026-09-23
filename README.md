@@ -6,7 +6,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/platform-macOS-blue" alt="Platform">
-  <img src="https://img.shields.io/badge/size-3.5MB-brightgreen" alt="Size">
+  <img src="https://img.shields.io/badge/size-10MB-brightgreen" alt="Size">
   <img src="https://img.shields.io/badge/React-19-61DAFB" alt="React 19">
   <img src="https://img.shields.io/badge/Tauri-v2-FFC131" alt="Tauri v2">
   <img src="https://img.shields.io/github/v/release/Brid9e/svn-go" alt="Latest Release">
